@@ -445,8 +445,17 @@
     if ($('audioRefresh')) $('audioRefresh').addEventListener('click', refreshLatestAudio);
     window.addEventListener('resize', drawChart);
 
-    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-      navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+    // 古いService Workerを解除し、キャッシュによる不具合を防ぐ
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations()
+        .then(registrations => {
+          return Promise.all(
+            registrations.map(registration => registration.unregister())
+          );
+        })
+        .catch(error => {
+          console.warn('Service Workerの解除に失敗しました:', error);
+        });
     }
 
     refresh();
