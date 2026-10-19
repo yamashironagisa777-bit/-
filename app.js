@@ -81,7 +81,14 @@
       });
       if (!listRes.ok) {
         const detail = await listRes.text();
-        throw new Error(`録音一覧を取得できません (HTTP ${listRes.status})。StorageのSELECTポリシーを確認してください。 ${detail.slice(0, 180)}`);
+        console.error('Supabase録音一覧取得エラー', {
+          url: `${base}/storage/v1/object/list/${encodeURIComponent(AUDIO_BUCKET)}`,
+          status: listRes.status,
+          response: detail
+        });
+        throw new Error(
+          `録音一覧取得エラー (HTTP ${listRes.status}): ${detail.slice(0, 300)}`
+        );
       }
       const listed = await listRes.json();
       const file = Array.isArray(listed) ? listed.find(item => item.name === AUDIO_OBJECT) : null;
