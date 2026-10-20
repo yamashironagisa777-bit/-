@@ -157,12 +157,11 @@
         }
 
         // URLの署名は毎回変わる場合があるため、一定時間経過後に更新する
-        const signedAt = Number(player.dataset.signedAt || 0);
-        if (!player.src || Date.now() - signedAt > 50 * 60 * 1000) {
-          player.src = audioUrl;
-          player.dataset.signedAt = String(Date.now());
-          player.load();
-        }
+        
+        player.src = audioUrl;
+        player.dataset.signedAt = String(Date.now());
+        player.load();
+
 
         fileName.textContent = '最新の録音';
         status.textContent = `${AUDIO_OBJECT} ・ 再生URLを取得しました`;
